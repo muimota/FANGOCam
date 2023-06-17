@@ -238,6 +238,9 @@ app.get('/album', (req, res) => {
   renderIfAuthenticated(req, res, 'pages/album');
 });
 
+app.get('/camera', (req, res) => {
+  renderIfAuthenticated(req, res, 'pages/camera');
+});
 
 // Handles form submissions from the search page.
 // The user has made a selection and wants to load photos into the photo frame

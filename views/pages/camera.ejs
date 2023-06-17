@@ -1,0 +1,20 @@
+<%- include('../partials/head') %>
+
+<%- include('../partials/dialogs') %>
+<section class="sample-content">
+    <div class="camera">
+        <video id="video">Video stream not available.</video>
+        
+        <img id="photo">
+    </div> 
+    <button id="btnShoot" style="width:100px;height:100px;" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+        <i class="material-icons">photo_camera</i>
+    </button>     
+</section>
+
+
+
+<%- include('../partials/js') %>
+<script src="/js/camera.js"></script>
+
+<%- include('../partials/footer') %>
