@@ -242,6 +242,12 @@ app.get('/camera', (req, res) => {
   renderIfAuthenticated(req, res, 'pages/camera');
 });
 
+app.get('/createAlbum',async (req,res) =>{
+  const authToken = req.user.token;
+  const r = await createAlbum(authToken,config.albumName)
+  logger.info(r)
+  res.send(r)
+})
 // Handles form submissions from the search page.
 // The user has made a selection and wants to load photos into the photo frame
 // from a search query.
@@ -461,6 +467,53 @@ function constructDate(year, month, day) {
   return date;
 }
 
+async function createAlbum(authToken,albumName) {
+  
+  const data = await libraryApiGetAlbums(authToken);
+  let alreadyExists = false
+  let result 
+  for(const album of data['albums']){
+    logger.debug(`${album['title']} - ${album['isWriteable']}`)
+    alreadyExists = (album['title'] == albumName && album['isWriteable'])
+    if(alreadyExists){
+      result = album
+      logger.info("Album already exists")
+      break
+    }  
+  }
+  
+  
+  if(!alreadyExists){
+    try {
+      // Loop while the number of photos threshold has not been met yet
+      // and while there is a nextPageToken to load more items.
+      logger.info(`creating album ${albumName}`);
+
+      // Make a POST request to search the library or album
+      const creationResponse =
+        await fetch(config.apiEndpoint + '/v1/albums', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+          },
+          body: JSON.stringify({'album':{'title':config.albumName}})
+        });
+
+      result = await creationResponse.json();
+      
+        
+    } catch (err) {
+      // Log the error and prepare to return it.
+      logger.error(authToken)
+      logger.error(err);
+    }
+  }
+
+  logger.debug(JSON.stringify(result));
+  return result
+}
+
 // Submits a search request to the Google Photos Library API for the given
 // parameters. The authToken is used to authenticate requests for the API.
 // The minimum number of expected results is configured in config.photosToLoad.
@@ -585,6 +638,7 @@ async function libraryApiGetAlbums(authToken) {
   }
 
   logger.info('Albums loaded.');
+  //This shorthand syntax is equivalent to writing {albums: albums, error: error}. (chatGPT)
   return {albums, error};
 }
 

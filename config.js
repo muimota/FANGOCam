@@ -33,6 +33,8 @@ config.port = 8080;
 // plus.me scopes.
 config.scopes = [
   'https://www.googleapis.com/auth/photoslibrary.readonly',
+  'https://www.googleapis.com/auth/photoslibrary.appendonly',
+  'https://www.googleapis.com/auth/photoslibrary.sharing',
   'profile',
 ];
 
@@ -45,5 +47,6 @@ config.searchPageSize = 100;
 // The page size to use for the listing albums request. 50 is reccommended.
 config.albumPageSize = 50;
 
+config.albumName = 'FANGØCam'
 // The API end point to use. Do not change.
 config.apiEndpoint = 'https://photoslibrary.googleapis.com';
