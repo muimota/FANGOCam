@@ -265,13 +265,14 @@ app.post('/form', (req, res) => {
 
 const upload = multer({'limits':{'fileSize':9000000}});
 
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload', upload.single('file'),async (req, res) => {
   // La información del archivo se encuentra en `req.file`
   const base64Image = req.body.file;
   //logger.info(base64Image)
   const base64Data = base64Image.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
   const imageType = base64Image.split(';')[0].split('/')[1];
 
+  logger.info(imageType)
   // Genera un nombre de archivo único
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
   const fileName = 'image-' + uniqueSuffix + '.' + imageType;
@@ -286,6 +287,9 @@ app.post('/upload', upload.single('file'), (req, res) => {
       res.send('Imagen recibida y guardada correctamente.');
     }
   });
+   
+  const authToken = req.user.token;
+  const r = await uploadImage(authToken,base64Data,'image/jpeg')
   
 });
 
@@ -508,6 +512,7 @@ function constructDate(year, month, day) {
   return date;
 }
 
+//create an album 
 async function createAlbum(authToken,albumName) {
   
   const data = await libraryApiGetAlbums(authToken);
@@ -550,6 +555,67 @@ async function createAlbum(authToken,albumName) {
       logger.error(err);
     }
   }
+
+  logger.debug(JSON.stringify(result));
+  return result
+}
+
+//uploads an image to google photos
+async function uploadImage(authToken,imageData,mimetype) {
+  
+  let result = {}
+  try {
+    // Loop while the number of photos threshold has not been met yet
+    // and while there is a nextPageToken to load more items.
+    logger.info('uploading image...');
+    const binaryData = Buffer.from(imageData, 'base64')
+    // Make a POST request to search the library or album
+    const uploadResponse =
+      await fetch(config.apiEndpoint + '/v1/uploads', {
+        method: 'post',
+        headers: {
+          'Authorization': 'Bearer ' + authToken,
+          'Content-Type': 'application/octet-stream',
+          'X-Goog-Upload-Content-Type': 'image/jpeg',
+          'X-Goog-Upload-Protocol': 'raw'
+
+        },
+        body: binaryData
+      });
+    
+    logger.info('await')
+    const uploadToken = await uploadResponse.text();
+    logger.info(uploadToken)
+    
+    
+
+    const mediaItemResponse =
+      await fetch(config.apiEndpoint + '/v1/mediaItems:batchCreate', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authToken
+        },
+        body: JSON.stringify(
+          {"newMediaItems": [
+            {
+              "description": "item-description",
+              "simpleMediaItem": {
+                "fileName": "test.jpg",
+                "uploadToken": uploadToken
+              }
+            }]
+          }
+        )
+      });
+
+    result = await mediaItemResponse.json(); 
+  } catch (err) {
+    // Log the error and prepare to return it.
+    logger.error(authToken)
+    logger.error(err);
+  }
+  
 
   logger.debug(JSON.stringify(result));
   return result
