@@ -17,6 +17,7 @@
 // [START app]
 
 import bodyParser from 'body-parser';
+import busboy from 'busboy';
 import express from 'express';
 import expressWinston from 'express-winston';
 import fetch from 'node-fetch';
@@ -248,6 +249,16 @@ app.get('/createAlbum',async (req,res) =>{
   logger.info(r)
   res.send(r)
 })
+
+//curl -X POST --data-urlencode "username=pepe" http://localhost:8080/form
+app.post('/form', (req, res) => {
+  // Access the submitted form data
+  logger.info(JSON.stringify(req.body))
+  logger.info(req.body.username)
+
+  // Send a response or redirect to another page
+  res.send('Form submitted successfully!');
+});
 // Handles form submissions from the search page.
 // The user has made a selection and wants to load photos into the photo frame
 // from a search query.
