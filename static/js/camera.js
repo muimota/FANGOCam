@@ -1,7 +1,10 @@
 $(() => {
    
     const video = document.getElementById('video');
+    const img   = document.createElement('canvas');
     const canvas = document.createElement('canvas');
+
+    const imgctx = img.getContext("2d")
     const ctx = canvas.getContext("2d");
     let width = 300
     let height 
@@ -14,6 +17,8 @@ $(() => {
       
             video.setAttribute("width", width);
             video.setAttribute("height", height);
+            img.setAttribute("width", width);
+            img.setAttribute("height", height);
             canvas.setAttribute("width", width);
             canvas.setAttribute("height", height);
             streaming = true;
@@ -33,10 +38,33 @@ $(() => {
       
       $('#btnShoot').on( "click",()=>{
          
-          ctx.drawImage(video,0,0,video.width,video.height)
+          imgctx.drawImage(video,0,0,video.width,video.height)
+         
+          
+          //ctx.drawImage(img,0,0,img.width,img.height)
+          const slices = 15
+          let order = new Array()
+          for(let i=0;i<slices;i++){
+            order.push(i)
+          }
+          for(let i=0;i<slices;i++){
+            const indexA = Math.floor(Math.random() * order.length);
+            const aux = order[i]
+            order[i] = order[indexA]
+            order[indexA] = aux
+          }
+          
+          for(let i=0;i<slices;i++){
+            const w = Math.ceil(img.width/slices)
+            ctx.drawImage(img,
+                  w * i,0,
+                  w,img.height,
+                  w * (order[i]),0,
+                  w,img.height)
+          }
           const capturedImage = canvas.toDataURL('image/jpeg');
           $('#photo').attr('src',capturedImage)
-
+          
           var formData = new FormData();
           formData.append('file', capturedImage);
           $.ajax({
@@ -55,6 +83,7 @@ $(() => {
               // Handle error
             }
           });
+          
         })
 
   })
