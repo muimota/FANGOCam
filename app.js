@@ -17,7 +17,8 @@
 // [START app]
 
 import bodyParser from 'body-parser';
-import busboy from 'busboy';
+import * as fs from 'fs';
+import multer from 'multer';
 import express from 'express';
 import expressWinston from 'express-winston';
 import fetch from 'node-fetch';
@@ -31,6 +32,7 @@ import winston from 'winston';
 import {auth} from './auth.js';
 import {config} from './config.js';
 import {fileURLToPath} from 'url';
+import busboy from 'busboy';
 
 const app = express();
 const fileStore = sessionFileStore(session);
@@ -258,7 +260,35 @@ app.post('/form', (req, res) => {
 
   // Send a response or redirect to another page
   res.send('Form submitted successfully!');
+})
+
+
+const upload = multer({'limits':{'fileSize':9000000}});
+
+app.post('/upload', upload.single('file'), (req, res) => {
+  // La información del archivo se encuentra en `req.file`
+  const base64Image = req.body.file;
+  //logger.info(base64Image)
+  const base64Data = base64Image.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+  const imageType = base64Image.split(';')[0].split('/')[1];
+
+  // Genera un nombre de archivo único
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+  const fileName = 'image-' + uniqueSuffix + '.' + imageType;
+  const filePath = 'uploads/' + fileName;
+
+  fs.writeFile(filePath, base64Data, 'base64', function(err) {
+    if (err) {
+      console.log(err);
+      res.status(500).send('Error al guardar la imagen.');
+    } else {
+      console.log('Imagen guardada en: ' + filePath);
+      res.send('Imagen recibida y guardada correctamente.');
+    }
+  });
+  
 });
+
 // Handles form submissions from the search page.
 // The user has made a selection and wants to load photos into the photo frame
 // from a search query.
