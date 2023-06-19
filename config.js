@@ -48,5 +48,6 @@ config.searchPageSize = 100;
 config.albumPageSize = 50;
 
 config.albumName = 'FANGØCam'
+config.saveLocal = false
 // The API end point to use. Do not change.
 config.apiEndpoint = 'https://photoslibrary.googleapis.com';

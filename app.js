@@ -277,17 +277,18 @@ app.post('/upload', upload.single('file'),async (req, res) => {
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
   const fileName = 'image-' + uniqueSuffix + '.' + imageType;
   const filePath = 'uploads/' + fileName;
-
-  fs.writeFile(filePath, base64Data, 'base64', function(err) {
-    if (err) {
-      console.log(err);
-      res.status(500).send('Error al guardar la imagen.');
-    } else {
-      console.log('Imagen guardada en: ' + filePath);
-      res.send('Imagen recibida y guardada correctamente.');
-    }
-  });
-   
+  
+  if(config.saveLocal){
+    fs.writeFile(filePath, base64Data, 'base64', function(err) {
+      if (err) {
+        console.log(err);
+        res.status(500).send('Error al guardar la imagen.');
+      } else {
+        console.log('Imagen guardada en: ' + filePath);
+        res.send('Imagen recibida y guardada correctamente.');
+      }
+    });
+  }
   const authToken = req.user.token;
   const r = await uploadImage(authToken,base64Data,'image/jpeg')
   
