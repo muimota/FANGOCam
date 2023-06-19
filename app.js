@@ -266,6 +266,8 @@ app.post('/form', (req, res) => {
 const upload = multer({'limits':{'fileSize':9000000}});
 
 app.post('/upload', upload.single('file'),async (req, res) => {
+
+  const authToken = req.user.token;
   // La información del archivo se encuentra en `req.file`
   const base64Image = req.body.file;
   //logger.info(base64Image)
@@ -278,6 +280,9 @@ app.post('/upload', upload.single('file'),async (req, res) => {
   const fileName = 'image-' + uniqueSuffix + '.' + imageType;
   const filePath = 'uploads/' + fileName;
   
+  const albumInfo = await createAlbum(authToken,config.albumName)
+  const albumId   = albumInfo['id']
+  logger.info(`AlbumId: ${albumId}`)
   if(config.saveLocal){
     fs.writeFile(filePath, base64Data, 'base64', function(err) {
       if (err) {
@@ -289,8 +294,8 @@ app.post('/upload', upload.single('file'),async (req, res) => {
       }
     });
   }
-  const authToken = req.user.token;
-  const r = await uploadImage(authToken,base64Data,'image/jpeg')
+  
+  const r = await uploadImage(authToken,base64Data,'image/jpeg',albumId)
   
 });
 
@@ -562,7 +567,7 @@ async function createAlbum(authToken,albumName) {
 }
 
 //uploads an image to google photos
-async function uploadImage(authToken,imageData,mimetype) {
+async function uploadImage(authToken,imageData,mimetype,albumId) {
   
   let result = {}
   try {
@@ -598,7 +603,8 @@ async function uploadImage(authToken,imageData,mimetype) {
           'Authorization': 'Bearer ' + authToken
         },
         body: JSON.stringify(
-          {"newMediaItems": [
+          { "albumId":albumId,
+            "newMediaItems": [
             {
               "description": "item-description",
               "simpleMediaItem": {
@@ -618,7 +624,7 @@ async function uploadImage(authToken,imageData,mimetype) {
   }
   
 
-  logger.debug(JSON.stringify(result));
+  logger.info(JSON.stringify(result));
   return result
 }
 
