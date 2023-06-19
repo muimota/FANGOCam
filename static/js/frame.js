@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import mersenneTwister from "https://cdn.skypack.dev/mersenne-twister@1.1.0";
 
 // Empties the grid of images.
 function clearPreview() {
@@ -50,12 +51,13 @@ function showPreview(source, mediaItems) {
   // Loop over each media item and render it.
   $.each(mediaItems, (i, item) => {
     // Construct a thumbnail URL from the item's base URL at a small pixel size.
-    const thumbnailUrl = `${item.baseUrl}=w256-h256`;
+    //const thumbnailUrl = `${item.baseUrl}=w256-h256`;
     // Constuct the URL to the image in its original size based on its width and
     // height.
     const fullUrl = `${item.baseUrl}=w${item.mediaMetadata.width}-h${
         item.mediaMetadata.height}`;
-
+    
+    const thumbnailUrl = fullUrl
     // Compile the caption, conisting of the description, model and time.
     const description = item.description ? item.description : '';
     const model = item.mediaMetadata.photo.cameraModel ?
@@ -83,6 +85,40 @@ function showPreview(source, mediaItems) {
                                .addClass('img-fluid rounded thumbnail');
     linkToFullImage.append(thumbnailImage);
 
+    thumbnailImage.on('load', function() {
+      const canvas = document.createElement('canvas');
+      const img = $(this)[0]
+      
+      img.parentNode.insertBefore(canvas,null);
+      img.remove()
+      
+      const ctx = canvas.getContext("2d");
+  
+      canvas.width  = img.width
+      canvas.height = img.height
+      
+      const generator = new mersenneTwister(123);
+      const slices = 15
+      let order = new Array()
+      for(let i=0;i<slices;i++){
+        order.push(i)
+      }
+      for(let i=0;i<slices;i++){
+        const indexA = generator.random_int() % order.length;
+        const aux = order[i]
+        order[i] = order[indexA]
+        order[indexA] = aux
+      }
+      console.log(order)
+      for(let i=0;i<slices;i++){
+        const w = Math.ceil(img.width/slices)
+        ctx.drawImage(img,
+              w * i,0,
+              w,img.height,
+              w * order.indexOf(i), 0,
+              w,img.height)
+      }
+    });
     // The caption consists of the caption text and a link to open the image
     // in Google Photos.
     const imageCaption =
@@ -123,7 +159,7 @@ function loadQueue() {
   });
 }
 
-$(document).ready(() => {
+$(()=>{
   // Load the queue of photos selected by the user for the photo
   loadQueue();
 

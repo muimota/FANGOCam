@@ -269,6 +269,7 @@ app.post('/upload', upload.single('file'),async (req, res) => {
 
   const authToken = req.user.token;
   // La información del archivo se encuentra en `req.file`
+  logger.info(req.body.seed)
   const base64Image = req.body.file;
   //logger.info(base64Image)
   const base64Data = base64Image.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
@@ -388,7 +389,7 @@ app.get('/getAlbums', async (req, res) => {
   // Attempt to load the albums from cache if available.
   // Temporarily caching the albums makes the app more responsive.
   const cachedAlbums = await albumCache.getItem(userId);
-  if (cachedAlbums) {
+  if (false && cachedAlbums) {
     logger.verbose('Loaded albums from cache.');
     res.status(200).send(cachedAlbums);
   } else {
@@ -433,7 +434,7 @@ app.get('/getQueue', async (req, res) => {
   const cachedPhotos = await mediaItemCache.getItem(userId);
   const stored = await storage.getItem(userId);
 
-  if (cachedPhotos) {
+  if (false && cachedPhotos) {
     // Items are still cached. Return them.
     logger.verbose('Returning cached photos.');
     res.status(200).send({photos: cachedPhotos, parameters: stored.parameters});
