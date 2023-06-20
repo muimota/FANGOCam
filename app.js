@@ -389,7 +389,7 @@ app.get('/getAlbums', async (req, res) => {
   // Attempt to load the albums from cache if available.
   // Temporarily caching the albums makes the app more responsive.
   const cachedAlbums = await albumCache.getItem(userId);
-  if (false && cachedAlbums) {
+  if (config.useCache && cachedAlbums) {
     logger.verbose('Loaded albums from cache.');
     res.status(200).send(cachedAlbums);
   } else {
@@ -434,7 +434,7 @@ app.get('/getQueue', async (req, res) => {
   const cachedPhotos = await mediaItemCache.getItem(userId);
   const stored = await storage.getItem(userId);
 
-  if (false && cachedPhotos) {
+  if (config.useCache && cachedPhotos) {
     // Items are still cached. Return them.
     logger.verbose('Returning cached photos.');
     res.status(200).send({photos: cachedPhotos, parameters: stored.parameters});

@@ -173,10 +173,44 @@ $(()=>{
     transitionDuration: 1000,
     fullScreen: {autoStart: false},
     // Automatically advance after 3s to next photo.
-    slideShow: {autoStart: true, speed: 3000},
+    slideShow: {autoStart: true, speed: 6000},
     // Display the contents figcaption element as the caption of an image
     caption: function(instance, item) {
       return $(this).find('figcaption').html();
+    },
+    afterShow: function(){
+      const canvas = document.createElement('canvas');
+      const img = $('img.fancybox-image')[0]
+      
+      img.parentNode.insertBefore(canvas,null);
+      img.remove()
+      
+      const ctx = canvas.getContext("2d");
+  
+      canvas.width  = img.width
+      canvas.height = img.height
+      
+      const generator = new mersenneTwister(123);
+      const slices = 15
+      let order = new Array()
+      for(let i=0;i<slices;i++){
+        order.push(i)
+      }
+      for(let i=0;i<slices;i++){
+        const indexA = generator.random_int() % order.length;
+        const aux = order[i]
+        order[i] = order[indexA]
+        order[indexA] = aux
+      }
+      console.log(order)
+      for(let i=0;i<slices;i++){
+        const w = Math.ceil(img.width/slices)
+        ctx.drawImage(img,
+              w * i,0,
+              w,img.height,
+              w * order.indexOf(i), 0,
+              w,img.height)
+      }
     }
   });
 
