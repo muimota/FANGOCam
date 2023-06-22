@@ -78,8 +78,10 @@ $(() => {
         w, canvas.height)
     }
    
-    $('#photo').attr('src', img.toDataURL('image/jpeg'))
-    $('#photo2').attr('src', canvas.toDataURL('image/jpeg'))
+    //$('#photo2').attr('src', img.toDataURL('image/jpeg'))
+    $(video).hide()
+    $('#photo').show()
+    $('#photo').attr('src', canvas.toDataURL('image/jpeg'))
     
     const capturedImage = canvas.toDataURL('image/jpeg');
     
@@ -97,6 +99,8 @@ $(() => {
         console.log('success!')
         console.log(response);
         // Handle success response from server
+        $(video).show()
+        $('#photo').hide()
       },
       error: function(xhr, status, error) {
         console.log(error);
