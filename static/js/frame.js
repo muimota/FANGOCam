@@ -48,6 +48,7 @@ function showPreview(source, mediaItems) {
     $('startSlideshow').removeClass('disabled');
   }
 
+  mediaItems = mediaItems.reverse()
   // Loop over each media item and render it.
   $.each(mediaItems, (i, item) => {
     // Construct a thumbnail URL from the item's base URL at a small pixel size.
