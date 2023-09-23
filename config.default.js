@@ -1,4 +1,5 @@
 // Copyright 2018 Google LLC
+// 2023 muimota.net
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,13 +15,14 @@
 
 // This file contains the configuration options for this sample app.
 
+
 export const config = {};
 
 // The OAuth client ID from the Google Developers console.
-config.oAuthClientID = '35883138755-3kathipq5e9rsmps13mrmh6ljkdqfr4f.apps.googleusercontent.com';
+config.oAuthClientID = '<client_id>';
 
 // The OAuth client secret from the Google Developers console.
-config.oAuthclientSecret = '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';
+config.oAuthclientSecret = '<secret>>';
 
 // The callback to use for OAuth requests. This is the URL where the app is
 // running. For testing and running it locally, use 127.0.0.1.
@@ -49,6 +51,6 @@ config.albumPageSize = 50;
 
 config.albumName = 'FANGØCam'
 config.saveLocal = true
-config.useCache  = true
+config.useCache  = false
 // The API end point to use. Do not change.
 config.apiEndpoint = 'https://photoslibrary.googleapis.com';
