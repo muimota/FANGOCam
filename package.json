@@ -1,13 +1,13 @@
 {
-  "name": "photo-frame-sample",
+  "name": "fangocam",
   "version": "1.0.0",
-  "description": "Google Photos Library API photo frame sample",
+  "description": "FANGØ Cam ",
   "private": true,
   "license": "Apache-2.0",
-  "author": "Google LLC",
+  "author": "Martin Nadal",
   "repository": {
     "type": "git",
-    "url": "https://github.com/googlesamples/google-photos.git"
+    "url": "https://gitlab.mur.at/martinn/fangocam.git"
   },
   "main": "app.js",
   "type": "module",
