@@ -9,16 +9,17 @@ FANGØCam is a mobile camera application whose main feature is that the captured
 FANGØCam proposes to continue the line of work initiated with FANGØ (2020) as a weapon of defense against surveillance capitalism. If FANGØ was a device that obfuscated our behavior in the network by generating artificial interactions that hinder the extraction of value. FANGØcam aims to prevent the extraction of value from our image gallery and to parasitize the archives and infrastructures of these companies.
 
 ## Objectives
+
 to make a photography app that takes encrypted photos an app that decrypts them
 
 The exhibition space will show how the app works by making aesthetic explorations of image processing.
 
 ## References
 
-http://meiac.es/netescopio/algoritmia/e-algoritmia.html
-https://www.theverge.com/2020/11/11/21559930/google-train-ai-photos-image-labelling-app-android-update
-http://manovich.net/index.php/projects/automating-aesthetics-artificial-intelligence-and-image-culture
-https://www.youtube.com/watch?v=oLTNtvIHJ7M
+http://meiac.es/netescopio/algoritmia/e-algoritmia.html  
+https://www.theverge.com/2020/11/11/21559930/google-train-ai-photos-image-labelling-app-android-update  
+http://manovich.net/index.php/projects/automating-aesthetics-artificial-intelligence-and-image-culture  
+https://www.youtube.com/watch?v=oLTNtvIHJ7M  
 https://www.captchatweet.com/
 
 # CODE
@@ -27,7 +28,18 @@ This code is based in [google photos examples](https://github.com/googlesamples/
 
 **WARNING:** The code contained within this software is experimental and has not undergone rigorous testing. Use at Your Own Risk: The author and contributors of this software make no warranties, express or implied, regarding the fitness for a particular purpose, the accuracy, completeness, or reliability of the code.
 
+# INSTALLATION
+
+## API tokens
+
 Rename **config.default.js** to **config.js** with all the tokens filled
 
+## Run Local
 
+First install all the dependencies`npm install`  
+Run de app `node app.js`
 
+## Docker
+
+Create image `docker build -t fangocam .`  
+Run image `docker run -it -p 8080:8080 fangocam:latest`
