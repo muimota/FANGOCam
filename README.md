@@ -21,6 +21,7 @@ https://www.theverge.com/2020/11/11/21559930/google-train-ai-photos-image-labell
 http://manovich.net/index.php/projects/automating-aesthetics-artificial-intelligence-and-image-culture  
 https://www.youtube.com/watch?v=oLTNtvIHJ7M  
 https://www.captchatweet.com/
+https://arstechnica.com/information-technology/2023/12/metas-new-ai-image-generator-was-trained-on-1-1-billion-instagram-and-facebook-photos/
 
 # CODE
 
@@ -32,14 +33,23 @@ This code is based in [google photos examples](https://github.com/googlesamples/
 
 ## API tokens
 
-Rename **config.default.js** to **config.js** with all the tokens filled
+Rename **config.default.js** to **config.js** with all the tokens filled.  
+API Token can be requested at [Google Photos API](https://developers.google.com/photos/library/guides/get-started#enable-the-api)
 
 ## Run Local
 
 First install all the dependencies`npm install`  
-Run de app `node app.js`
+Run de app `cd app; node app.js`
 
 ## Docker
 
-Create image `docker build -t fangocam .`  
-Run image `docker run -it -p 8080:8080 fangocam:latest`
+This project can also run ina [docker](https://www.docker.com/) container. We provide two ways
+
+### Docker compose
+
+    Launch the container `docker-compose up`
+
+### Docker build
+
+    Create image `docker build -t fangocam app`
+    Run image `docker run -it -p 8080:8080 fangocam:latest`
